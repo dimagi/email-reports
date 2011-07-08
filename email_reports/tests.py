@@ -1,5 +1,5 @@
 from rapidsms.tests.scripted import TestScript
-from logistics.apps.reports.tasks import *
+from email_reports.tasks import *
 
 class TestReports (TestScript):
     def testDailyEmailReports(self):

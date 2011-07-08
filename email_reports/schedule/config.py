@@ -1,7 +1,7 @@
 """ This is the glue that links html views from wherever into email-able reports """
 
-from logistics.apps.logistics.views import reporting, aggregate
-from logistics.apps.reports.schedule import ReportSchedule
+from logistics.views import reporting, aggregate
+from email_reports.schedule import ReportSchedule
 
 REPORTING_REPORT = ReportSchedule(reporting,
                                   title="Reporting Rates")

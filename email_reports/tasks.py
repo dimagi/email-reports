@@ -3,7 +3,7 @@
 from datetime import datetime
 from celery.schedules import crontab
 from celery.decorators import periodic_task
-from logistics.apps.reports.models import DailyReportSubscription, WeeklyReportSubscription
+from email_reports.models import DailyReportSubscription, WeeklyReportSubscription
 
 @periodic_task(run_every=crontab(hour="*", minute="2", day_of_week="*"))
 def daily_reports():    

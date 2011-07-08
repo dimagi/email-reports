@@ -9,8 +9,8 @@ from django.contrib.sites.models import Site
 from django.db import models
 from dimagi.utils.django.email import send_HTML_email
 from dimagi.utils.mixins import UnicodeMixIn
-from logistics.apps.reports.schedule.html2text import html2text
-from logistics.apps.reports.schedule.config import SCHEDULABLE_REPORTS
+from email_reports.schedule.html2text import html2text
+from email_reports.schedule.config import SCHEDULABLE_REPORTS
 
 class ReportSubscription(models.Model, UnicodeMixIn):
     report = models.CharField(max_length=100)

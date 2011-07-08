@@ -3,8 +3,8 @@
 from django.contrib.sites.models import Site
 from django.http import HttpRequest
 from django.template.loader import render_to_string
-from logistics.apps.reports.schedule.parsers import ReportParser
-from logistics.apps.reports.schedule.request import RequestProcessor
+from email_reports.schedule.parsers import ReportParser
+from email_reports.schedule.request import RequestProcessor
 
 class ReportSchedule(object):
     """

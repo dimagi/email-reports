@@ -7,10 +7,10 @@ from django.http import HttpResponseRedirect, HttpResponse
 from dimagi.utils.web import render_to_response
 from django.views.decorators.http import require_POST
 from django.template import RequestContext
-from logistics.apps.reports.models import ReportSubscription, \
+from rapidsms.contrib.locations.models import Location
+from email_reports.schedule.config import SCHEDULABLE_REPORTS
+from email_reports.models import ReportSubscription, \
     DailyReportSubscription, WeeklyReportSubscription
-from logistics.apps.reports.schedule.config import SCHEDULABLE_REPORTS
-from logistics.apps.logistics.models import Location
 
 @login_required
 def email_reports(request, context={}, template="reports/scheduled_reports.html"):
