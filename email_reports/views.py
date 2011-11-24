@@ -3,14 +3,12 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect, HttpResponse
-from dimagi.utils.web import render_to_response
-from django.views.decorators.http import require_POST
-from django.template import RequestContext
+from django.http import HttpResponseRedirect
 from rapidsms.contrib.locations.models import Location
-from email_reports.schedule.config import SCHEDULABLE_REPORTS
+from dimagi.utils.web import render_to_response
 from email_reports.models import ReportSubscription, \
-    DailyReportSubscription, WeeklyReportSubscription
+    DailyReportSubscription, WeeklyReportSubscription, \
+    SchedulableReport
 
 @login_required
 def email_reports(request, context={}, template="reports/scheduled_reports.html"):
@@ -46,7 +44,7 @@ def add_scheduled_report(request, user_id):
     context = {}
     context.update({"hours": [(val, "%s:00" % val) for val in range(24)],
                     "days":  [(val, calendar.day_name[val]) for val in range(7)],
-                    "reports": SCHEDULABLE_REPORTS})
+                    "reports": SchedulableReport.objects.all()})
     # here we get less generic : b
     context['locations'] = Location.objects.all()
     return render_to_response(request, "reports/add_scheduled_report.html", context)
@@ -70,6 +68,6 @@ def drop_scheduled_report(request, user_id, report_id):
 def test_scheduled_report(request, user_id, report_id):
     report = ReportSubscription.objects.get(pk=report_id)
     user = User.objects.get(pk=user_id)
-    report.send_to_user(user)
+    report.send_pdf_to_user(user)
     messages.success(request, "Test message sent to %s" % user.email)
     return HttpResponseRedirect(reverse("email_reports"))

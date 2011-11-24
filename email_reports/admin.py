@@ -10,6 +10,10 @@ class WeeklyReportSubscriptionAdmin(admin.ModelAdmin):
 class DailyReportSubscriptionAdmin(admin.ModelAdmin):
     model = DailyReportSubscription
 
+class SchedulableReportAdmin(admin.ModelAdmin):
+    model = SchedulableReport
+
 admin.site.register(WeeklyReportSubscription, WeeklyReportSubscriptionAdmin)
 admin.site.register(DailyReportSubscription, DailyReportSubscriptionAdmin)
+admin.site.register(SchedulableReport, SchedulableReportAdmin)
 

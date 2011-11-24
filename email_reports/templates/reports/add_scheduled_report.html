@@ -14,8 +14,8 @@
 	    {% csrf_token %}
         <label for="report_type" id="report_type">Choose Report: </label> 
         <select name="report_type" id="report_type">
-            {% for id, report in reports.items %}
-            <option value="{{id}}">{{report.title}}</option>
+            {% for report in reports %}
+            <option value="{{report.id}}">{{report.display_name}}</option>
             {% endfor %}
         </select>
         <!-- NOT GENERIC -->
