@@ -22,7 +22,7 @@ def email_reports(request, context={}, template="reports/scheduled_reports.html"
 
 def add_scheduled_report(request, user_id):
     if request.method == "POST":
-        report_type = request.POST["report_type"]
+        report_id = request.POST["report_id"]
         hour = request.POST["hour"]
         day = request.POST["day"]
         if day=="all":
@@ -31,7 +31,7 @@ def add_scheduled_report(request, user_id):
             report = WeeklyReportSubscription()
             report.day_of_week = int(day)
         report.hours = int(hour)
-        report.report = report_type
+        report.report = SchedulableReport.objects.get(pk=report_id)
         # not generic
         location_code = request.POST["location_code"]
         report.view_args = {'location_code':location_code}

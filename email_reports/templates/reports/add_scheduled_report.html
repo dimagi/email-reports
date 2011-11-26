@@ -12,8 +12,8 @@
     <h4>What should we send you?</h4>
     <form method="post" action="">
 	    {% csrf_token %}
-        <label for="report_type" id="report_type">Choose Report: </label> 
-        <select name="report_type" id="report_type">
+        <label for="report_id" id="report_id">Choose Report: </label> 
+        <select name="report_id" id="report_id">
             {% for report in reports %}
             <option value="{{report.id}}">{{report.display_name}}</option>
             {% endfor %}
