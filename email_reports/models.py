@@ -31,17 +31,24 @@ class SchedulableReport(models.Model):
     def __unicode__(self):
         return self.view_name
 
-    def get_title(self, user, view_args={}):
-        return 'placeholder title'
-
+    def email_subject(self, user, view_args={}):
+        try:
+            site = Site.objects.get().name
+        except Site.DoesNotExist:
+            site = 'RapidSMS' # or whatever
+        return "%(site)s Report: %(report)s" % {'site': site, 
+                                                'report':self.display_name }
+    
     def get_path_to_pdf(self, user, view_args={}):
         urlbase = Site.objects.get_current().domain
         # TODO: add view args back
         full_url='%(base)s%(path)s?magic_token=%(token)s' % \
-             {"base": urlbase, "path": reverse(self.view_name), "token": settings.MAGIC_TOKEN}
+                 {"base": urlbase, "path": reverse(self.view_name, kwargs=view_args), 
+                  "token": settings.MAGIC_TOKEN}
         fd, tmpfilepath = tempfile.mkstemp(suffix=".pdf", prefix="report-")
         os.close(fd)
-        command = 'wkhtmltopdf "%(url)s" %(file)s' % {"url": full_url, "file": tmpfilepath}
+        command = 'wkhtmltopdf --print-media-type "%(url)s" %(file)s' % \
+                  {"url": full_url, "file": tmpfilepath}
         p = subprocess.Popen(command, stdout=PIPE, stderr=PIPE, shell=True)
         p.communicate()
         return tmpfilepath
@@ -63,8 +70,7 @@ class ReportSubscription(models.Model, UnicodeMixIn):
     
     def send_pdf_to_user(self, user):
         report = self.report.get_path_to_pdf(user, self.view_args)
-        title = self.report.get_title(user, self.view_args)
-        title = self._append_site_name_if_available(title)
+        title = self.report.email_subject(user, self.view_args)
         email = EmailMessage(title, 'See attachment',
                              settings.EMAIL_LOGIN, [user.email])
         email.attach_file(report)
@@ -75,19 +81,13 @@ class ReportSubscription(models.Model, UnicodeMixIn):
         body = report.get_response(user, self.view_args)
         title = self._append_site_name_if_available(report.title)
         try:
-            name = Site.objects.get().name
-            title = "{0} ({1})".format(report.title, name)
+            site_name = Site.objects.get().name
         except Site.DoesNotExist:
             pass
+        else:
+            title = "{0} {1}".format(site_name, title)
         send_HTML_email(title, user.email, 
                         html2text(body), body)
-
-    def _append_site_name_if_available(self, input):
-        try:
-            name = Site.objects.get().name
-            return "{0} {1}".format(name, input)
-        except Site.DoesNotExist:
-            return input
 
     @property
     def view_args(self):

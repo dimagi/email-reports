@@ -9,7 +9,7 @@ Installation
 ===============
 
 0. Install app and link urls like you would any other django app. Update the MAGIC TOKEN in your settings.py
-1. Register any view name that you want to be able to send out via pdf over email in the SchedulableReport model
+1. Register any view name that you want to be able to send out via pdf over email in the SchedulableReport model. You'll also need to add the magic_token_required decorator to those views so that the scheduler task can hit them.
 2. Make sure that your view prints nicely, taking advantage of the css 'media=print' option
 3. Ensure that logins can be circumvented with the use of the MAGIC TOKEN in settings.py
 
