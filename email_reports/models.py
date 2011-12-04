@@ -77,6 +77,11 @@ class ReportSubscription(models.Model, UnicodeMixIn):
         email.send(fail_silently=False)
     
     def send_html_to_user(self, user):
+        # because we could have html-email reports (using report-body div's) live alongside
+        # pdf reports, i've left this code as is
+        # TODO: however, if we do start using this code, it would make sense to update 
+        # send_html_to_user to use models.SchedulableReport in the db instead of the 
+        # static SCHEDULABLE_REPORTS config
         report = SCHEDULABLE_REPORTS[self.report]
         body = report.get_response(user, self.view_args)
         title = self._append_site_name_if_available(report.title)
