@@ -47,7 +47,7 @@ class SchedulableReport(models.Model):
                   "token": settings.MAGIC_TOKEN}
         fd, tmpfilepath = tempfile.mkstemp(suffix=".pdf", prefix="report-")
         os.close(fd)
-        command = 'wkhtmltopdf --print-media-type "%(url)s" %(file)s' % \
+        command = 'wkhtmltopdf.sh --print-media-type "%(url)s" %(file)s' % \
                   {"url": full_url, "file": tmpfilepath}
         p = subprocess.Popen(command, stdout=PIPE, stderr=PIPE, shell=True)
         p.communicate()
