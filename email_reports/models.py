@@ -45,7 +45,7 @@ class SchedulableReport(models.Model):
         full_url='%(base)s%(path)s?magic_token=%(token)s' % \
                  {"base": urlbase, "path": reverse(self.view_name, kwargs=view_args), 
                   "token": settings.MAGIC_TOKEN}
-        fd, tmpfilepath = tempfile.mkstemp(suffix=".pdf", prefix="report-")
+        fd, tmpfilepath = tempfile.mkstemp(suffix=".pdf", prefix="%s-report-" % self.view_name)
         os.close(fd)
         command = 'wkhtmltopdf.sh --print-media-type "%(url)s" %(file)s' % \
                   {"url": full_url, "file": tmpfilepath}
