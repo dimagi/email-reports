@@ -66,7 +66,7 @@ class ReportSubscription(models.Model, UnicodeMixIn):
 
     def send(self):
         for user in self.users.all():
-            self.send_to_user(user)
+            self.send_pdf_to_user(user)
     
     def send_pdf_to_user(self, user):
         report = self.report.get_path_to_pdf(user, self.view_args)
