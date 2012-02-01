@@ -51,7 +51,7 @@
                     <td>{{ report.report }}</td>
                     <td>{% for k,v in report.view_args.items %}{{ v }}{% endfor %}</td>
                     <td>{{ report.hours }}:00</td>
-                    <td>{% if not report.day_of_week %}Every day{% else %}{% int_to_day report.day_of_week %}{% endif %}</td>
+                    <td>{% if report.day_of_week == None %}Every day{% else %}{% int_to_day report.day_of_week %}{% endif %}</td>
                     <td><a class="delete_link" href="#">{% trans "Stop" %}</a>
                         <div class="delete_dialog" title="Drop Report Schedule?">
                             <form name="drop_report" action="{% url drop_scheduled_report user.pk report.pk %}" method="POST">
