@@ -1,6 +1,6 @@
 from django.http import HttpResponseForbidden
 from django.http import HttpResponseRedirect
-from django.conf import settings
+from rapidsms.conf import settings
 
 def magic_token_required():
     """
