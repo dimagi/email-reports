@@ -15,7 +15,6 @@ from django.db import models
 from rapidsms.conf import settings
 from dimagi.utils.django.email import send_HTML_email
 from dimagi.utils.mixins import UnicodeMixIn
-from email_reports.schedule.html2text import html2text
 from email_reports.schedule.config import SCHEDULABLE_REPORTS
 
 class SchedulableReport(models.Model):
@@ -91,8 +90,7 @@ class ReportSubscription(models.Model, UnicodeMixIn):
             pass
         else:
             title = "{0} {1}".format(site_name, title)
-        send_HTML_email(title, user.email, 
-                        html2text(body), body)
+        send_HTML_email(title, user.email, body)
 
     @property
     def view_args(self):
