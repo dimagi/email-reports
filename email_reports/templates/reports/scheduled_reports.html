@@ -35,7 +35,7 @@
 
 {% block content %}
 <div class="module">
-	<h1>Scheduled Reports for {{ user.username|safe }}</h1>
+	<h1>Scheduled Reports for {{ user.username|safe|upper }}</h1>
     {% if scheduled_reports %}
         <table class='big_border'>
             <tr><th></th>

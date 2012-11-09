@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from rapidsms.contrib.locations.models import Location
 from dimagi.utils.web import render_to_response
 from email_reports.models import ReportSubscription, \
@@ -11,16 +12,19 @@ from email_reports.models import ReportSubscription, \
     SchedulableReport
 
 @login_required
-def email_reports(request, context={}, template="reports/scheduled_reports.html"):
+def email_reports(request, pk=None, context={}, template="reports/scheduled_reports.html"):
     context['user'] = request.user
-    d = [d for d in DailyReportSubscription.objects.filter(users=request.user)]
-    w = [w for w in WeeklyReportSubscription.objects.filter(users=request.user)]
+    if pk is not None:
+        context['user'] = get_object_or_404(User, pk=pk)
+    d = [d for d in DailyReportSubscription.objects.filter(users=context['user'])]
+    w = [w for w in WeeklyReportSubscription.objects.filter(users=context['user'])]
     context['scheduled_reports'] = d + w
     return render_to_response(
         request, template, context
     )
 
 def add_scheduled_report(request, user_id):
+    recipient = User.objects.get(pk=user_id)
     if request.method == "POST":
         report_id = request.POST["report_id"]
         hour = request.POST["hour"]
@@ -37,7 +41,7 @@ def add_scheduled_report(request, user_id):
         report.view_args = {'location_code':location_code}
 
         report.save()
-        report.users.add(User.objects.get(pk=user_id))
+        report.users.add(recipient)
         report.save()
         messages.success(request, "New scheduled report added!")
         return HttpResponseRedirect(reverse("email_reports"))
@@ -47,6 +51,7 @@ def add_scheduled_report(request, user_id):
                     "reports": SchedulableReport.objects.all()})
     # here we get less generic : b
     context['locations'] = Location.objects.all()
+    context['recipient'] = recipient
     return render_to_response(request, "reports/add_scheduled_report.html", context)
 
 #@require_POST

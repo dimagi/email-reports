@@ -9,7 +9,7 @@
 </style>
 {% endblock %}
 {% block content %}
-    <h4>What should we send you?</h4>
+    <h4>What should we send {% ifequal recipient request.user %}you{% else %}{{recipient|upper}}{% endifequal %}?</h4>
     <form method="post" action="">
 	    {% csrf_token %}
         <label for="report_id" id="report_id">Choose Report: </label> 
