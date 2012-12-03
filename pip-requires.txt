@@ -1,5 +1,6 @@
 django<1.4
 django-celery<2.3
+html5lib==0.95
 git+git://github.com/dimagi/rapidsms.git#egg=rapidsms
 git+git://github.com/dimagi/dimagi-utils.git#egg=dimagi-utils
 git+git://github.com/dimagi/rapidsms-logistics.git#egg=rapidsms-logistics
