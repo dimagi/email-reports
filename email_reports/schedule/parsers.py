@@ -29,4 +29,4 @@ class ReportParser():
         return self._divs.get('report-content')
         
     def get_html(self):
-        return "%(title)s\n%(body)s" % {"title": self.title, "body": self.body}
+        return "%(title)s\n%(body)s" % {"title": self.title or u'', "body": self.body or u''}
