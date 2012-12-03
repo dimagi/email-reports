@@ -19,6 +19,15 @@ from email_reports.schedule.config import SCHEDULABLE_REPORTS
 
 class SchedulableReport(models.Model):
     """ can turns django views into emailable html reports """
+    
+    TYPE_PDF = 1
+    TYPE_HTML = 2
+
+    TYPE_CHOICES = (
+        (TYPE_PDF, 'PDF'),
+        (TYPE_HTML, 'HTML'),
+    )
+
     # names of django views which can be pdf-ified and 
     # sent out regularly over email
     view_name = models.CharField(max_length=100)
@@ -26,6 +35,7 @@ class SchedulableReport(models.Model):
     # note that the reports themselves will be emailed using 
     # the html.head.title element of the view
     display_name = models.CharField(max_length=255)
+    report_type = models.IntegerField(choices=TYPE_CHOICES, default=TYPE_PDF)
 
     def __unicode__(self):
         return self.view_name
