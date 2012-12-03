@@ -7,3 +7,9 @@ def report(request):
     "Minimal HTML report response."
     html = HTML_TEMPLATE % {'title': 'Foo', 'content': 'Bar', 'noise': ''}
     return HttpResponse(content=html)
+
+
+def report_with_arg(request, report_id):
+    "Minimal HTML report response."
+    html = HTML_TEMPLATE % {'title': 'Report with Arg', 'content': 'Report ID: %s' % report_id, 'noise': ''}
+    return HttpResponse(content=html)
