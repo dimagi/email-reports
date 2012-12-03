@@ -71,7 +71,14 @@ class ReportParser():
         self._body_parser = DivIdParser("report-content")
         self._body_parser.feed(raw_html)
         self._body_parser.close()
+
+    @property
+    def title(self):
+        return self._title_parser.get_html()
+
+    @property
+    def body(self):
+        return self._body_parser.get_html()
         
     def get_html(self):
-        return "%(title)s\n%(body)s" % {"title": self._title_parser.get_html(),
-                                        "body": self._body_parser.get_html()}
+        return "%(title)s\n%(body)s" % {"title": self.title, "body": self.body}

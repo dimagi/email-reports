@@ -2,8 +2,8 @@
 
 from mock import patch
 
+from .base import BaseReportTestCase
 from email_reports.models import SchedulableReport
-from email_reports.tests.base import BaseReportTestCase
 
 
 class SendHTMLReportTestCase(BaseReportTestCase):
