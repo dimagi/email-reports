@@ -10,6 +10,7 @@ INSTALLED_APPS = (
     'djtables',
     'rapidsms',
     'rapidsms.contrib.locations',
+    'rapidsms.contrib.messagelog',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
