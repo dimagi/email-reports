@@ -1,0 +1,7 @@
+django<1.4
+django-celery<2.3
+git+git://github.com/dimagi/rapidsms.git#egg=rapidsms
+git+git://github.com/dimagi/dimagi-utils.git#egg=dimagi-utils
+git+git://github.com/dimagi/rapidsms-logistics.git#egg=rapidsms-logistics
+git+git://github.com/dimagi/django-tablib.git#egg=django-tablib
+git+git://github.com/adammck/djtables.git#egg=djtables
