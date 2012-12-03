@@ -60,3 +60,15 @@ class ReportParserTestCase(unittest.TestCase):
         html = HTML_TEMPLATE % {'title': 'Foo', 'content': 'Bar', 'noise': noise}
         parser = ReportParser(html)
         self.assertEqual(parser.body, 'Bar')
+
+    def test_parse_title_non_found(self):
+        "Return None if title is not found."
+        html = '<html></html>'
+        parser = ReportParser(html)
+        self.assertEqual(parser.title, None)
+
+    def test_parse_content_non_found(self):
+        "Return None if content is not found."
+        html = '<html></html>'
+        parser = ReportParser(html)
+        self.assertEqual(parser.body, None)

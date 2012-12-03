@@ -1,4 +1,4 @@
-""" These models define user's subscriptions to reports specified in schedule/config.py """
+""" These models define user's subscriptions to reports """
 
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
