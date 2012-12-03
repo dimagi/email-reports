@@ -28,3 +28,13 @@ Here are some instructions, modified from http://drupal.org/node/870058
 xvfb-run -a -s "-screen 0 640x480x16" wkhtmltopdf $*
 8. Move this shell script to /usr/bin, and set permissions: sudo chmod a+x /usr/bin/wkhtmltopdf.sh
 Call wkhtmltopdf.sh instead of wkhtmltopdf
+
+
+Running the Tests
+===========================
+
+With all of the dependencies installed you can run the tests from the repo root using an included settings file::
+
+    django-admin.py test email_reports --settings=email_reports.tests.settings
+
+Please report any failures to the `Github issue tracker <https://github.com/dimagi/email-reports/issues>`_.
