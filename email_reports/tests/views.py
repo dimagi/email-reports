@@ -1,4 +1,4 @@
-from django.http import HttpReponse
+from django.http import HttpResponse
 
 
 def report(request):
@@ -17,4 +17,4 @@ def report(request):
         </body>  
     </html>
     """
-    return HttpReponse(content=html)
+    return HttpResponse(content=html)
