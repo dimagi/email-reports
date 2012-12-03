@@ -46,3 +46,17 @@ class ReportParserTestCase(unittest.TestCase):
         html = HTML_TEMPLATE % {'title': 'Foo', 'content': content, 'noise': ''}
         parser = ReportParser(html)
         self.assertEqual(parser.body, content)
+
+    def test_parse_title_messy(self):
+        "Parse title from report-title div with surrounding messy HTML."
+        noise = '<div>' * 100
+        html = HTML_TEMPLATE % {'title': 'Foo', 'content': 'Bar', 'noise': noise}
+        parser = ReportParser(html)
+        self.assertEqual(parser.title, 'Foo')
+
+    def test_parse_content_messy(self):
+        "Parse body from report-content div with surrounding messy HTML."
+        noise = '<div>' * 100
+        html = HTML_TEMPLATE % {'title': 'Foo', 'content': 'Bar', 'noise': noise}
+        parser = ReportParser(html)
+        self.assertEqual(parser.body, 'Bar')
