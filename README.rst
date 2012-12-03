@@ -33,7 +33,9 @@ Call wkhtmltopdf.sh instead of wkhtmltopdf
 Running the Tests
 ===========================
 
-With all of the dependencies installed you can run the tests from the repo root using an included settings file::
+In addition the dependencies included in the ``pip-requires.txt``, the test suite requires 
+`mock>=1.0 <http://www.voidspace.org.uk/python/mock/>`_. With all of the dependencies installed you 
+can run the tests from the repo root using an included settings file::
 
     django-admin.py test email_reports --settings=email_reports.tests.settings
 

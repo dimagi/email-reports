@@ -28,3 +28,4 @@ SECRET_KEY = 'secert-key-for-testing'
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 ROOT_URLCONF = 'email_reports.tests.urls'
+

@@ -95,8 +95,8 @@ class ReportSubscription(models.Model, UnicodeMixIn):
         # because we could have html-email reports (using report-body div's) live alongside
         # pdf reports, i've left this code as is
         url = reverse(self.report.view_name, kwargs=self.view_args)
-        match = resolve(url)
-        report = ReportSchedule(match.func, title=self.report.display_name)
+        func, args, kwargs = resolve(url)
+        report = ReportSchedule(func, title=self.report.display_name)
         body = report.get_response(user, self.view_args)
         title = report.title
         try:

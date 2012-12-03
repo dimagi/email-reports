@@ -1,6 +1,6 @@
 "Test model methods."
 
-from django.core import mail
+from mock import patch
 
 from email_reports.models import SchedulableReport
 from email_reports.tests.base import BaseReportTestCase
@@ -17,5 +17,11 @@ class SendHTMLReportTestCase(BaseReportTestCase):
 
     def test_send_single_email(self):
         "Parse email body to send to the users."
-        self.subscription.send()
-        self.assertEqual(len(mail.outbox), 1)
+        with patch('email_reports.models.send_HTML_email') as send_email:
+            self.subscription.send()
+            self.assertEqual(send_email.call_count, 1)
+            args, kwargs = send_email.call_args
+            title, email, body = args           
+            self.assertEqual(email, self.user.email)
+            # Email subject uses report display name by default
+            self.assertTrue(self.report.display_name in title)
