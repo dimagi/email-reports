@@ -94,10 +94,11 @@ class ReportSubscription(models.Model, UnicodeMixIn):
     def send_html_to_user(self, user):
         # because we could have html-email reports (using report-body div's) live alongside
         # pdf reports, i've left this code as is
-        match = resolve(self.report.view_name)
+        url = reverse(self.report.view_name, kwargs=self.view_args)
+        match = resolve(url)
         report = ReportSchedule(match.func, title=self.report.display_name)
         body = report.get_response(user, self.view_args)
-        title = self._append_site_name_if_available(report.title)
+        title = report.title
         try:
             site_name = Site.objects.get().name
         except Site.DoesNotExist:
@@ -110,7 +111,7 @@ class ReportSubscription(models.Model, UnicodeMixIn):
     def view_args(self):
         if self._view_args:
             return json.loads(self._view_args)
-        return self._view_args
+        return self._view_args or {}
 
     @view_args.setter
     def view_args(self, value):
