@@ -1,4 +1,4 @@
-""" These models define user's subscriptions to reports specified in schedule/config.py """
+""" These models define user's subscriptions to reports """
 
 #!/usr/bin/env python
 # vim: ai ts=4 sts=4 et sw=4 encoding=utf-8
@@ -8,17 +8,27 @@ import json
 import tempfile
 from subprocess import PIPE
 from django.core.mail.message import EmailMessage
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, resolve
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.db import models
 from rapidsms.conf import settings
 from dimagi.utils.django.email import send_HTML_email
 from dimagi.utils.mixins import UnicodeMixIn
-from email_reports.schedule.config import SCHEDULABLE_REPORTS
+from email_reports.schedule import ReportSchedule
+
 
 class SchedulableReport(models.Model):
     """ can turns django views into emailable html reports """
+    
+    TYPE_PDF = 1
+    TYPE_HTML = 2
+
+    TYPE_CHOICES = (
+        (TYPE_PDF, 'PDF'),
+        (TYPE_HTML, 'HTML'),
+    )
+
     # names of django views which can be pdf-ified and 
     # sent out regularly over email
     view_name = models.CharField(max_length=100)
@@ -26,6 +36,7 @@ class SchedulableReport(models.Model):
     # note that the reports themselves will be emailed using 
     # the html.head.title element of the view
     display_name = models.CharField(max_length=255)
+    report_type = models.IntegerField(choices=TYPE_CHOICES, default=TYPE_PDF)
 
     def __unicode__(self):
         return self.view_name
@@ -64,8 +75,13 @@ class ReportSubscription(models.Model, UnicodeMixIn):
                  self.report)
 
     def send(self):
+        func = lambda x: None
+        if self.report.report_type == SchedulableReport.TYPE_PDF:
+            func = self.send_pdf_to_user
+        elif self.report.report_type == SchedulableReport.TYPE_HTML:
+            func = self.send_html_to_user
         for user in self.users.all():
-            self.send_pdf_to_user(user)
+            func(user)
     
     def send_pdf_to_user(self, user):
         report = self.report.get_path_to_pdf(user, self.view_args)
@@ -78,12 +94,11 @@ class ReportSubscription(models.Model, UnicodeMixIn):
     def send_html_to_user(self, user):
         # because we could have html-email reports (using report-body div's) live alongside
         # pdf reports, i've left this code as is
-        # TODO: however, if we do start using this code, it would make sense to update 
-        # send_html_to_user to use models.SchedulableReport in the db instead of the 
-        # static SCHEDULABLE_REPORTS config
-        report = SCHEDULABLE_REPORTS[self.report]
+        url = reverse(self.report.view_name, kwargs=self.view_args)
+        func, args, kwargs = resolve(url)
+        report = ReportSchedule(func, title=self.report.display_name)
         body = report.get_response(user, self.view_args)
-        title = self._append_site_name_if_available(report.title)
+        title = report.title
         try:
             site_name = Site.objects.get().name
         except Site.DoesNotExist:
@@ -96,7 +111,7 @@ class ReportSubscription(models.Model, UnicodeMixIn):
     def view_args(self):
         if self._view_args:
             return json.loads(self._view_args)
-        return self._view_args
+        return self._view_args or {}
 
     @view_args.setter
     def view_args(self, value):
