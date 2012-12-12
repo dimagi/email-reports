@@ -6,6 +6,7 @@ from django.template.loader import render_to_string
 from email_reports.schedule.parsers import ReportParser
 from email_reports.schedule.request import RequestProcessor
 
+
 class ReportSchedule(object):
     """
     A basic report scedule, fully customizable, but requiring you to 

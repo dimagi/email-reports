@@ -14,6 +14,7 @@ def report_with_arg(request, report_id):
     html = HTML_TEMPLATE % {'title': 'Report with Arg', 'content': 'Report ID: %s' % report_id, 'noise': ''}
     return HttpResponse(content=html)
 
+
 def report_with_subject(request):
     "Include an email subject in the HTML report response."
     content = "<div id='report-subject'>Custom \nSubject</div>"

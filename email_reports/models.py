@@ -63,6 +63,7 @@ class SchedulableReport(models.Model):
         p.communicate()
         return tmpfilepath
 
+
 class ReportSubscription(models.Model, UnicodeMixIn):
     report = models.ForeignKey(SchedulableReport)
     _view_args = models.CharField(max_length=512, null=True, blank=True)
@@ -123,10 +124,12 @@ class ReportSubscription(models.Model, UnicodeMixIn):
     def view_args(self):
         self._view_args = None
 
+
 class DailyReportSubscription(ReportSubscription):
     # removing these, since they break navigation in django admin
     #__name__ = "DailyReportNotification"    
     hours = models.IntegerField()
+
 
 class WeeklyReportSubscription(ReportSubscription):
     # removing these, since they break navigation in django admin
