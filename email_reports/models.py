@@ -97,15 +97,17 @@ class ReportSubscription(models.Model, UnicodeMixIn):
         url = reverse(self.report.view_name, kwargs=self.view_args)
         func, args, kwargs = resolve(url)
         report = ReportSchedule(func, title=self.report.display_name)
-        body = report.get_response(user, self.view_args)
-        title = report.title
-        try:
-            site_name = Site.objects.get().name
-        except Site.DoesNotExist:
-            pass
-        else:
-            title = "{0} {1}".format(site_name, title)
-        send_HTML_email(title, user.email, body)
+        result = report.get_response(user, self.view_args)
+        subject = result['subject']
+        if not subject:
+            result['body']
+            try:
+                site_name = Site.objects.get().name
+            except Site.DoesNotExist:
+                pass
+            else:
+                subject = "{0} {1}".format(site_name, report.title)
+        send_HTML_email(subject, user.email, result['body'])
 
     @property
     def view_args(self):
