@@ -72,3 +72,23 @@ class ReportParserTestCase(unittest.TestCase):
         html = '<html></html>'
         parser = ReportParser(html)
         self.assertEqual(parser.body, None)
+
+    def test_parse_subject_non_found(self):
+        "Return None if subject is not found."
+        html = '<html></html>'
+        parser = ReportParser(html)
+        self.assertEqual(parser.subject, None)
+
+    def test_parse_subject(self):
+        "Parse subject from report-subject div."
+        title = "Title: <div id='report-subject'>This is my subject</div>"
+        html = HTML_TEMPLATE % {'title': title, 'content': 'Bar', 'noise': ''}
+        parser = ReportParser(html)
+        self.assertEqual(parser.subject, "This is my subject")
+
+    def test_parse_subject_html(self):
+        "Strip html from subject from report-subject div."
+        title = "Title: <div id='report-subject'>This is my subject <p>Not included</p></div>"
+        html = HTML_TEMPLATE % {'title': title, 'content': 'Bar', 'noise': ''}
+        parser = ReportParser(html)
+        self.assertEqual(parser.subject, "This is my subject ")
