@@ -6,6 +6,7 @@ from django.template.loader import render_to_string
 from email_reports.schedule.parsers import ReportParser
 from email_reports.schedule.request import RequestProcessor
 
+
 class ReportSchedule(object):
     """
     A basic report scedule, fully customizable, but requiring you to 
@@ -21,7 +22,8 @@ class ReportSchedule(object):
     def title(self):
         return self._title
     
-    def get_response(self, user, view_args={}):
+    def get_response(self, user, view_args=None):
+        view_args = view_args or {}
         # these three lines are a complicated way of saying request.user = user.
         # could simplify if the abstraction doesn't make sense.
         request = HttpRequest()
@@ -29,6 +31,9 @@ class ReportSchedule(object):
         response = self._view_func(request, **view_args)
         parser = ReportParser(response.content)
         site = Site.objects.get()
-        return render_to_string("reports/report_email.html", 
-                                { "report_body": parser.get_html(), 
-                                  "site": site })
+        result = {
+            'body': render_to_string("reports/report_email.html", 
+                {"report_body": parser.get_html(), "site": site}),
+            'subject': parser.get_subject()
+        } 
+        return result

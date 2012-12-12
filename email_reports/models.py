@@ -63,6 +63,7 @@ class SchedulableReport(models.Model):
         p.communicate()
         return tmpfilepath
 
+
 class ReportSubscription(models.Model, UnicodeMixIn):
     report = models.ForeignKey(SchedulableReport)
     _view_args = models.CharField(max_length=512, null=True, blank=True)
@@ -97,15 +98,17 @@ class ReportSubscription(models.Model, UnicodeMixIn):
         url = reverse(self.report.view_name, kwargs=self.view_args)
         func, args, kwargs = resolve(url)
         report = ReportSchedule(func, title=self.report.display_name)
-        body = report.get_response(user, self.view_args)
-        title = report.title
-        try:
-            site_name = Site.objects.get().name
-        except Site.DoesNotExist:
-            pass
-        else:
-            title = "{0} {1}".format(site_name, title)
-        send_HTML_email(title, user.email, body)
+        result = report.get_response(user, self.view_args)
+        subject = result['subject']
+        if not subject:
+            result['body']
+            try:
+                site_name = Site.objects.get().name
+            except Site.DoesNotExist:
+                pass
+            else:
+                subject = "{0} {1}".format(site_name, report.title)
+        send_HTML_email(subject, user.email, result['body'])
 
     @property
     def view_args(self):
@@ -121,10 +124,12 @@ class ReportSubscription(models.Model, UnicodeMixIn):
     def view_args(self):
         self._view_args = None
 
+
 class DailyReportSubscription(ReportSubscription):
     # removing these, since they break navigation in django admin
     #__name__ = "DailyReportNotification"    
     hours = models.IntegerField()
+
 
 class WeeklyReportSubscription(ReportSubscription):
     # removing these, since they break navigation in django admin

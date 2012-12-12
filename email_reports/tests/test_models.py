@@ -63,3 +63,13 @@ class SendHTMLReportTestCase(BaseReportTestCase):
             args, kwargs = send_email.call_args
             title, email, body = args  
             self.assertTrue('Report ID: 100' in body)
+
+    def test_email_subject_parsed(self):
+        "Subject can be optionally parsed from the HTML. New lines are removed."
+        self.report.view_name = 'test-report-subject'
+        self.report.save()
+        with patch('email_reports.models.send_HTML_email') as send_email:
+            self.subscription.send()
+            args, kwargs = send_email.call_args
+            title, email, body = args
+            self.assertEqual(title, "Custom Subject")

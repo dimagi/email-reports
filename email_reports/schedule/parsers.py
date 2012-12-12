@@ -18,15 +18,28 @@ class ReportParser():
             if 'id' in div.attrib:
                 text = div.text or u''
                 children = u''.join(map(ElementTree.tostring, div))
-                self._divs[div.attrib['id']] = u'%s%s' % (text, children)
+                parsed = {
+                    'text': text,
+                    'html': u'%s%s' % (text, children)
+                }
+                self._divs[div.attrib['id']] = parsed
 
     @property
     def title(self):
-        return self._divs.get('report-title')
+        return self._divs.get('report-title', {}).get('html')
 
     @property
     def body(self):
-        return self._divs.get('report-content')
+        return self._divs.get('report-content', {}).get('html')
+
+    @property
+    def subject(self):
+        return self._divs.get('report-subject', {}).get('text')
         
     def get_html(self):
         return "%(title)s\n%(body)s" % {"title": self.title or u'', "body": self.body or u''}
+
+    def get_subject(self):
+        "Strip new lines."
+        subject = self.subject or u''
+        return u''.join(subject.splitlines())
