@@ -7,3 +7,6 @@ class TestReports (TestScript):
 
     def testWeeklyEmailReports(self):
         weekly_reports()
+
+    def testMonthlyEmailReports(self):
+        monthly_reports()

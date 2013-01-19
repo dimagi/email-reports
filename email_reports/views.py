@@ -9,7 +9,7 @@ from rapidsms.contrib.locations.models import Location
 from dimagi.utils.web import render_to_response
 from email_reports.models import ReportSubscription, \
     DailyReportSubscription, WeeklyReportSubscription, \
-    SchedulableReport
+    MonthlyReportSubscription, SchedulableReport
 
 @login_required
 def email_reports(request, pk=None, context={}, template="reports/scheduled_reports.html"):
@@ -18,7 +18,8 @@ def email_reports(request, pk=None, context={}, template="reports/scheduled_repo
         context['user'] = get_object_or_404(User, pk=pk)
     d = [d for d in DailyReportSubscription.objects.filter(users=context['user'])]
     w = [w for w in WeeklyReportSubscription.objects.filter(users=context['user'])]
-    context['scheduled_reports'] = d + w
+    m = [m for m in MonthlyReportSubscription.objects.filter(users=context['user'])]
+    context['scheduled_reports'] = d + w + m
     return render_to_response(
         request, template, context
     )
@@ -31,6 +32,9 @@ def add_scheduled_report(request, user_id):
         day = request.POST["day"]
         if day=="all":
             report = DailyReportSubscription()
+        elif day=="first":
+            report = MonthlyReportSubscription()
+            report.day_of_month = 1
         else:
             report = WeeklyReportSubscription()
             report.day_of_week = int(day)

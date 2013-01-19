@@ -4,6 +4,9 @@
 from django.contrib import admin
 from email_reports.models import *
 
+class MonthlyReportSubscriptionAdmin(admin.ModelAdmin):
+    model = MonthlyReportSubscription
+
 class WeeklyReportSubscriptionAdmin(admin.ModelAdmin):
     model = WeeklyReportSubscription
 
@@ -13,6 +16,7 @@ class DailyReportSubscriptionAdmin(admin.ModelAdmin):
 class SchedulableReportAdmin(admin.ModelAdmin):
     model = SchedulableReport
 
+admin.site.register(MonthlyReportSubscription, MonthlyReportSubscriptionAdmin)
 admin.site.register(WeeklyReportSubscription, WeeklyReportSubscriptionAdmin)
 admin.site.register(DailyReportSubscription, DailyReportSubscriptionAdmin)
 admin.site.register(SchedulableReport, SchedulableReportAdmin)

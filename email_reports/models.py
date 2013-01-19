@@ -130,10 +130,10 @@ class DailyReportSubscription(ReportSubscription):
     #__name__ = "DailyReportNotification"    
     hours = models.IntegerField()
 
-
 class WeeklyReportSubscription(ReportSubscription):
-    # removing these, since they break navigation in django admin
-    #__name__ = "WeeklyReportNotification"
     hours = models.IntegerField()
     day_of_week = models.IntegerField()
 
+class MonthlyReportSubscription(ReportSubscription):
+    hours = models.IntegerField()
+    day_of_month = models.IntegerField()
