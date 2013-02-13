@@ -55,7 +55,7 @@ class SchedulableReport(models.Model):
         params = {'magic_token': settings.MAGIC_TOKEN}
         params.update(view_args)
         path = "%s?%s" % (reverse(self.view_name), 
-                          "&".join("%s=%s" % (k,v) for k, v in view_args.items()))
+                          "&".join("%s=%s" % (k,v) for k, v in params.items()))
         full_url='%(base)s%(path)s' % {"base": urlbase, "path": path}
         fd, tmpfilepath = tempfile.mkstemp(suffix=".pdf", prefix="%s-report-" % self.view_name)
         os.close(fd)
