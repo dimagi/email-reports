@@ -52,9 +52,11 @@ class SchedulableReport(models.Model):
     def get_path_to_pdf(self, user, view_args={}):
         urlbase = Site.objects.get_current().domain
         # TODO: add view args back
-        full_url='%(base)s%(path)s?magic_token=%(token)s' % \
-                 {"base": urlbase, "path": reverse(self.view_name, kwargs=view_args), 
-                  "token": settings.MAGIC_TOKEN}
+        params = {'magic_token': settings.MAGIC_TOKEN}
+        params.update(view_args)
+        path = "%s?%s" % (reverse(self.view_name), 
+                          "&".join("%s=%s" % (k,v) for k, v in view_args.items()))
+        full_url='%(base)s%(path)s' % {"base": urlbase, "path": path}
         fd, tmpfilepath = tempfile.mkstemp(suffix=".pdf", prefix="%s-report-" % self.view_name)
         os.close(fd)
         command = 'wkhtmltopdf.sh --print-media-type --use-xserver "%(url)s" %(file)s' % \
@@ -95,6 +97,7 @@ class ReportSubscription(models.Model, UnicodeMixIn):
     def send_html_to_user(self, user):
         # because we could have html-email reports (using report-body div's) live alongside
         # pdf reports, i've left this code as is
+        # TODO: fix to use GET params
         url = reverse(self.report.view_name, kwargs=self.view_args)
         func, args, kwargs = resolve(url)
         report = ReportSchedule(func, title=self.report.display_name)
