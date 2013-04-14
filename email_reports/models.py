@@ -51,7 +51,6 @@ class SchedulableReport(models.Model):
     
     def get_path_to_pdf(self, user, view_args={}):
         urlbase = Site.objects.get_current().domain
-        # TODO: add view args back
         params = {'magic_token': settings.MAGIC_TOKEN}
         params.update(view_args)
         path = "%s?%s" % (reverse(self.view_name), 
@@ -97,8 +96,7 @@ class ReportSubscription(models.Model, UnicodeMixIn):
     def send_html_to_user(self, user):
         # because we could have html-email reports (using report-body div's) live alongside
         # pdf reports, i've left this code as is
-        # TODO: fix to use GET params
-        url = reverse(self.report.view_name, kwargs=self.view_args)
+        url = reverse(self.report.view_name)
         func, args, kwargs = resolve(url)
         report = ReportSchedule(func, title=self.report.display_name)
         result = report.get_response(user, self.view_args)

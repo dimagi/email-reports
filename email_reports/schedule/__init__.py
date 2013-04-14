@@ -27,8 +27,8 @@ class ReportSchedule(object):
         # these three lines are a complicated way of saying request.user = user.
         # could simplify if the abstraction doesn't make sense.
         request = HttpRequest()
-        self._processor.preprocess(request, user=user)
-        response = self._view_func(request, **view_args)
+        self._processor.preprocess(request, user=user, **view_args)
+        response = self._view_func(request)
         parser = ReportParser(response.content)
         site = Site.objects.get()
         result = {

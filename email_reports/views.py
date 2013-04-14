@@ -42,7 +42,7 @@ def add_scheduled_report(request, user_id):
         report.report = SchedulableReport.objects.get(pk=report_id)
         # not generic
         location_code = request.POST["location_code"]
-        report.view_args = {'location_code':location_code}
+        report.view_args = {'place':location_code}
 
         report.save()
         report.users.add(recipient)
@@ -54,7 +54,7 @@ def add_scheduled_report(request, user_id):
                     "days":  [(val, calendar.day_name[val]) for val in range(7)],
                     "reports": SchedulableReport.objects.all()})
     # here we get less generic : b
-    context['locations'] = Location.objects.all()
+    context['locations'] = Location.objects.filter(is_active=True)
     context['recipient'] = recipient
     return render_to_response(request, "reports/add_scheduled_report.html", context)
 
@@ -77,6 +77,6 @@ def drop_scheduled_report(request, user_id, report_id):
 def test_scheduled_report(request, user_id, report_id):
     report = ReportSubscription.objects.get(pk=report_id)
     user = User.objects.get(pk=user_id)
-    report.send_pdf_to_user(user)
+    report.send()
     messages.success(request, "Test message sent to %s" % user.email)
     return HttpResponseRedirect(reverse("email_reports"))

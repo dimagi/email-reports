@@ -5,5 +5,6 @@ class RequestProcessor(object):
         Kind of like a middleware. If you need to preprocess the request 
         do it here"""
         for key, val in vals.items():
+            request.GET[key] = val
             setattr(request, key, val)
 
